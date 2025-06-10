@@ -891,6 +891,8 @@ video.video-background {
     transition: all 500ms linear;
     transition-delay: 0s;
     transition-delay: 0.1s;
+    height:52px;
+    width:52px
     transform: scale(1);
 }
 
