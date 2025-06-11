@@ -522,7 +522,7 @@
 							<div class="contact-content">
 							<div style="">
 								<h4>Address</h4>
-								<a target="_blank" href="https://maps.app.goo.gl/MVfMx1HnmQ2USkcA7"><h6 style="font-family: sans-serif;">1/5, Gnanai st,
+								<a style="text-decoration: none;" target="_blank" href="https://maps.app.goo.gl/MVfMx1HnmQ2USkcA7"><h6 style="font-family: sans-serif; text-decoration: none;">1/5, Gnanai st,
 									WCC junction,
 									Nagercoil, 
 									Kanyakumari-629001</h6> </a>
@@ -535,7 +535,7 @@
 							</div>
 							<div class="contact-content">
 								<h4>Contact Number</h4>
-								<h6 style="font-family: sans-serif;"> <a href="tel:9894480046">9894480046</a></h6>
+								<h6 style="font-family: sans-serif; "> <a href="tel:9894480046" style="text-decoration: none;">9894480046</a></h6>
 							</div>
 						</div>
 						<div class="contact-items">
@@ -544,7 +544,7 @@
 							</div>
 							<div class="contact-content">
 								<h4>Email Us</h4>
-								<h6><a href="mailto:eliteaquangl@gmail.com">eliteaquangl@gmail.com</a></h6>
+								<h6><a style="text-decoration: none;" href="mailto:eliteaquangl@gmail.com">eliteaquangl@gmail.com</a></h6>
 
 							</div>
 						</div>
@@ -751,139 +751,144 @@
 
 	<!-- scroll js -->
 	<script src="assets/js/script.js"></script>
-
+	<script type="text/javascript"
+	src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+</script>
 	<script>
-		$(document).ready(function() {
-			// Form validation and submission
-			$('#it-form').on('submit', function(e) {
-				e.preventDefault();
-				const $form = $(this);
-				let isValid = true;
+	$(document).ready(function() {
+    // Initialize EmailJS only once
+    emailjs.init({
+        publicKey: "eAuUA0vrGpht1YTt7",
+    });
 
-				// Reset error states
-				$form.find('.form-box').removeClass('error');
-				$form.find('input, textarea').css({
-					'border-color': '',
-					'box-shadow': 'none'
-				});
-				$form.find('.error-message').hide();
-				$form.find('#status').text('').removeClass('error success');
+    // Use event delegation to ensure the event listener is attached correctly
+    $(document).off('submit', '#it-form').on('submit', '#it-form', function(e) {
+        e.preventDefault();
+        const $form = $(this);
+        let isValid = true;
 
-				// Define which fields are required for validation
-				const requiredFieldNames = ['name', 'email', 'phone', 'message'];
-				
-				// Validate each required field
-				requiredFieldNames.forEach(function(fieldName) {
-					const $input = $form.find(`[name="${fieldName}"]`);
-				requiredFieldNames.forEach(function(fieldName) {
-					const $input = $form.find(`[name="${fieldName}"]`);
-					
-					if ($input.length === 0) return; // Skip if field doesn't exist
-					
-					const $formBox = $input.closest('.form-box');
-					const value = $input.val() ? $input.val().trim() : '';
-					let errorMessage = '';
+        // Reset error states
+        $form.find('.form-box').removeClass('error');
+        $form.find('input, textarea').css({
+            'border-color': '',
+            'box-shadow': 'none'
+        });
+        $form.find('.error-message').hide();
+        $form.find('#status').text('').removeClass('error success');
 
-					console.log('Validating field:', fieldName, 'Value:', value);
+        // Define which fields are required for validation
+        const requiredFieldNames = ['name', 'email', 'phone', 'message'];
 
-					// Check if field is empty
-					if (!value) {
-						isValid = false;
-						errorMessage = fieldName === 'message' ? 'Message is required' : `${capitalize(fieldName)} is required`;
-					} else {
-						// Additional validation based on field type
-						if (fieldName === 'email' && !validateEmail(value)) {
-							isValid = false;
-							errorMessage = 'Please enter a valid email address';
-						} else if (fieldName === 'phone' && !validatePhone(value)) {
-							isValid = false;
-							errorMessage = 'Please enter a valid 10-digit phone number';
-						} else if (fieldName === 'message' && value.length < 10) {
-							isValid = false;
-							errorMessage = 'Message must be at least 10 characters long';
-						}
-					}
+        // Validate each required field
+        requiredFieldNames.forEach(function(fieldName) {
+            const $input = $form.find(`[name="${fieldName}"]`);
+            if ($input.length === 0) return; // Skip if field doesn't exist
 
-					if (errorMessage) {
-						console.log('Error for field:', fieldName, 'Message:', errorMessage);
-						$formBox.addClass('error');
-						$input.css({
-							'border-color': '#ff0000',
-							'box-shadow': '0 0 5px rgba(255, 0, 0, 0.5)'
-						});
-						$formBox.find('.error-message').text(errorMessage).show();
-					}
-				});
+            const $formBox = $input.closest('.form-box');
+            const value = $input.val() ? $input.val().trim() : '';
+            let errorMessage = '';
 
-				console.log('Form validation result:', isValid);
+            // Check if field is empty
+            if (!value) {
+                isValid = false;
+                errorMessage = fieldName === 'message' ? 'Message is required' : `${capitalize(fieldName)} is required`;
+            } else {
+                // Additional validation based on field type
+                if (fieldName === 'email' && !validateEmail(value)) {
+                    isValid = false;
+                    errorMessage = 'Please enter a valid email address';
+                } else if (fieldName === 'phone' && !validatePhone(value)) {
+                    isValid = false;
+                    errorMessage = 'Please enter a valid 10-digit phone number';
+                } else if (fieldName === 'message' && value.length < 10) {
+                    isValid = false;
+                    errorMessage = 'Message must be at least 10 characters long';
+                }
+            }
 
-				if (!isValid) {
-					$form.find('#status').text('Please correct the errors in the form.').addClass('error');
-					// Scroll to first error
-					const firstError = $form.find('.error').first();
-					if (firstError.length) {
-						$('html, body').animate({
-							scrollTop: firstError.offset().top - 100
-						}, 500);
-					}
-					return;
-				}
+            if (errorMessage) {
+                $formBox.addClass('error');
+                $input.css({
+                    'border-color': '#ff0000',
+                    'box-shadow': '0 0 5px rgba(255, 0, 0, 0.5)'
+                });
+                $formBox.find('.error-message').text(errorMessage).show();
+            }
+        });
 
-				// Collect form data
-				const formData = {
-					name: $form.find('[name="name"]').val().trim(),
-					email: $form.find('[name="email"]').val().trim(),
-					phone: $form.find('[name="phone"]').val().trim(),
-					company: $form.find('[name="company"]').val() ? $form.find('[name="company"]').val().trim() : '',
-					message: $form.find('[name="message"]').val().trim()
-				};
+        if (!isValid) {
+            $form.find('#status').text('Please correct the errors in the form.').addClass('error');
+            // Scroll to first error
+            const firstError = $form.find('.error').first();
+            if (firstError.length) {
+                $('html, body').animate({
+                    scrollTop: firstError.offset().top - 100
+                }, 500);
+            }
+            return;
+        }
 
-				// Log form data to console for debugging
-				console.log('Form Data Submitted:', formData);
+        // Collect form data
+        const formData = {
+            name: $form.find('[name="name"]').val().trim(),
+            email: $form.find('[name="email"]').val().trim(),
+            phone: $form.find('[name="phone"]').val().trim(),
+            company: $form.find('[name="company"]').val() ? $form.find('[name="company"]').val().trim() : '',
+            message: $form.find('[name="message"]').val().trim()
+        };
 
-				// Disable submit button during submission
-				const submitButton = $form.find('#submit-btn');
-				submitButton.text('Sending...').prop('disabled', true);
+        // Log form data to console for debugging
+        console.log('Form Data Submitted:', formData);
 
-				// Simulate form submission
-				setTimeout(() => {
-					$form.find('#status').text('Message sent successfully! We will contact you soon.').addClass('success');
-					$form[0].reset();
-					submitButton.text('Send Message').prop('disabled', false);
-				}, 2000);
-			});
+        // Disable submit button during submission
+        const submitButton = $form.find('#submit-btn');
+        submitButton.text('Sending...').prop('disabled', true);
 
-			// Clear error when user starts typing
-			$('input, textarea').on('input', function() {
-				const $input = $(this);
-				const $formBox = $input.closest('.form-box');
-				$input.css({
-					'border-color': '',
-					'box-shadow': 'none'
-				});
-				$formBox.removeClass('error');
-				$formBox.find('.error-message').hide();
-				$('#status').text('').removeClass('error success');
-			});
+        // Send email using EmailJS
+        emailjs.send("service_zwotn2m", "template_lf9xf39", formData)
+            .then(function(response) {
+                console.log('SUCCESS!', response.status, response.text);
+                $form.find('#status').text('Message sent successfully! We will contact you soon.').addClass('success');
+                $form[0].reset();
+                submitButton.text('Send Message').prop('disabled', false);
+            }, function(error) {
+                console.log('FAILED...', error);
+                $form.find('#status').text('Failed to send message. Please try again later.').addClass('error');
+                submitButton.text('Send Message').prop('disabled', false);
+            });
+    });
 
-			// Capitalize first letter for error messages
-			function capitalize(str) {
-				return str.charAt(0).toUpperCase() + str.slice(1);
-			}
+    // Clear error when user starts typing
+    $('input, textarea').on('input', function() {
+        const $input = $(this);
+        const $formBox = $input.closest('.form-box');
+        $input.css({
+            'border-color': '',
+            'box-shadow': 'none'
+        });
+        $formBox.removeClass('error');
+        $formBox.find('.error-message').hide();
+        $('#status').text('').removeClass('error success');
+    });
 
-			// Email validation helper
-			function validateEmail(email) {
-				const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-				return re.test(email);
-			}
+    // Capitalize first letter for error messages
+    function capitalize(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
 
-			// Phone validation helper (10 digits)
-			function validatePhone(phone) {
-				const re = /^\d{10}$/;
-				return re.test(phone);
-			}
-		})
-	})
+    // Email validation helper
+    function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+
+    // Phone validation helper (10 digits)
+    function validatePhone(phone) {
+        const re = /^\d{10}$/;
+        return re.test(phone);
+    }
+});
+
 	</script>
 </body>
 
